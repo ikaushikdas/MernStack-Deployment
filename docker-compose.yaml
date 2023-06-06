@@ -1,0 +1,70 @@
+version: '3.3'
+services:
+    frontend:
+        container_name: frontend
+        build:
+            context: ./mern-stack-client
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        volumes:
+            - ./mern-stack-client/src:/app/src
+        depends_on:
+            - backend
+        ports:
+            - 3001:3000
+        networks:
+            - new-api-network
+
+
+    backend:
+        container_name: backend
+        build:
+            context: ./mern-stack-api
+            dockerfile: Dockerfile
+        depends_on:
+            - mongo
+        volumes:
+            - ./mern-stack-api:/app
+            - /app/node_modules
+        ports:
+            - 4000:4000
+        networks:
+            - new-api-network
+
+    mongo:
+        container_name: mongo-dev
+        image: mongo:4.2
+        environment:
+          - MONGO_INITDB_ROOT_USERNAME=admin
+          - MONGO_INITDB_DATABASE=postManagerDB
+          - MONGO_INITDB_ROOT_PASSWORD=admin1234
+        networks:
+          - new-api-network
+        ports:
+          - '27017:27017'
+        volumes:
+          - ./data:/data/db
+
+    mongo-express:
+        container_name: mongo-express
+        image: mongo-express
+        depends_on:
+          - mongo
+        networks:
+          - new-api-network
+        environment:
+          - ME_CONFIG_MONGODB_SERVER=mongo
+          - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+          - ME_CONFIG_MONGODB_ADMINPASSWORD=admin1234
+          - ME_CONFIG_BASICAUTH_USERNAME=admin
+          - ME_CONFIG_BASICAUTH_PASSWORD=tribes
+        ports:
+          - '8083:8081'
+        volumes:
+          - ./data:/data/db
+
+networks:
+  new-api-network:
+    driver: bridge
+volumes:
+  data:
