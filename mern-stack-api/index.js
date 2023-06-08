@@ -9,7 +9,7 @@ var postMessageRoutes = require('./controllers/postMessageController')
 var app = express()
 
 app.use(bodyParser.json())
-app.use(cors({origin:'*'}))
+app.use(cors({origin:'http://frontend:3001'}))
 app.options('/postmessages', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader('Access-Control-Allow-Methods', '*');
