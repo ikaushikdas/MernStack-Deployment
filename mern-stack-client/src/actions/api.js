@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = 'http://backend:4000/'
+const baseUrl = 'http://localhost:4000/'
 
 export default {
     postMessage(url = baseUrl + 'postmessages/') {
